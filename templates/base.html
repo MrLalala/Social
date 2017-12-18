@@ -13,7 +13,7 @@
                     <li{% if section == 'dashboard' %}
                         class="selected"
                        {% endif %}>
-                        <a href="{% url 'account:dashboard' %}">My Dashboard</a>
+                        <a href="{% url 'dashboard' %}">My Dashboard</a>
                     </li>
                     <li{% if section == 'image' %}
                         class="selected"
@@ -30,9 +30,9 @@
             <span class="user">
                 {% if request.user.is_authenticated %}
                     Hello {{ request.user.first_name }}
-                    <a href="{% url 'account:logout' %}">Logout</a>
+                    <a href="{% url 'logout' %}">Logout</a>
                 {% else %}
-                    <a href="{% url 'account:login' %}">Login</a>
+                    <a href="{% url 'login' %}">Login</a>
                 {% endif %}
             </span>
         </div>

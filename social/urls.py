@@ -15,10 +15,8 @@ Including another URLconf
 """
 from django.conf.urls import url, include
 from django.contrib import admin
-from django.contrib.auth.views import password_change_done
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^account/', include('account.urls', namespace='account')),
-    url(r'^account/password-change/done/$', password_change_done, name='password_change_done'),
+    url(r'^account/', include('account.urls')),
 ]
