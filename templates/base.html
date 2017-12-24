@@ -29,6 +29,7 @@
             {% endif %}
             <span class="user">
                 {% if request.user.is_authenticated %}
+                    <img src="/media/{{ request.user.profile.photo }}" alt="有么" height="20" width="20">
                     Hello {{ request.user.first_name }}
                     <a href="{% url 'logout' %}">Logout</a>
                 {% else %}
@@ -36,6 +37,8 @@
                 {% endif %}
             </span>
         </div>
+        <img src="{% static 'test/error.png' %}" alt="App static">
+        <img src="{% static 'images/error.png' %}" alt="Common static">
         <div id="content">
             {% block content %}
             {% endblock %}
