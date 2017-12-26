@@ -70,6 +70,10 @@ TEMPLATES = [
     },
 ]
 
+AUTHENTICATION_BACKENDS = (
+   'account.authentication.EmailAuthBackend',
+)
+
 WSGI_APPLICATION = 'social.wsgi.application'
 
 

@@ -39,6 +39,16 @@
         </div>
         <img src="{% static 'test/error.png' %}" alt="App static">
         <img src="{% static 'images/error.png' %}" alt="Common static">
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li class="{{ message.tags }}">
+                    {{ message|safe }}
+                        <a href="#" class="close"> </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
         <div id="content">
             {% block content %}
             {% endblock %}
