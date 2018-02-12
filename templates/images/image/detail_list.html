@@ -1,0 +1,11 @@
+{% for user in users %}
+    <div>
+        {% if user.profile.photo %}
+            <img src="{{ user.profile.photo.url }}" alt="No">
+        {% else %}
+            {{ user.first_name }}
+        {% endif %}
+    </div>
+{% empty %}
+    Nobody Like This Picture
+{% endfor %}

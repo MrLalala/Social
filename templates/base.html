@@ -5,6 +5,29 @@
         <title>{% block title %}{% endblock %}</title>
         <link href="{% static 'css/css.css' %}" rel="stylesheet">
     </head>
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+{#    载入Cookie插件#}
+    <script src=" http://cdn.jsdelivr.net/jquery.cookie/1.4.1/jquery.cookie.min.js "></script>
+    <script>
+        var csrftoken = $.cookie('csrftoken');
+        function csrfSafeMethod(method) {
+            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+        }
+        $.ajaxSetup(
+            {
+                beforeSend: function (xhr, settings) {
+                    if (!csrfSafeMethod(settings.type) && !this.crossDomain)
+                    {
+                        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+                    }
+                }
+            }
+        );
+        $(document).ready(function () {
+            {% block domready %}
+            {% endblock %}
+        })
+    </script>
     <body>
         <div id="header">
             <span class="logo">Bookmarks</span>
@@ -18,7 +41,7 @@
                     <li{% if section == 'image' %}
                         class="selected"
                        {% endif %}>
-                        <a href="#">Image</a>
+                        <a href="{% url 'images:list' %}">Image</a>
                     </li>
                     <li{% if section == 'people' %}
                         class="selected"
@@ -29,7 +52,7 @@
             {% endif %}
             <span class="user">
                 {% if request.user.is_authenticated %}
-                    <img src="/media/{{ request.user.profile.photo }}" alt="有么" height="20" width="20">
+{#                    <img src="/media/{{ request.user.profile.photo }}" alt="有么" height="20" width="20">#}
                     Hello {{ request.user.first_name }}
                     <a href="{% url 'logout' %}">Logout</a>
                 {% else %}
@@ -37,8 +60,6 @@
                 {% endif %}
             </span>
         </div>
-        <img src="{% static 'test/error.png' %}" alt="App static">
-        <img src="{% static 'images/error.png' %}" alt="Common static">
         {% if messages %}
             <ul class="messages">
                 {% for message in messages %}

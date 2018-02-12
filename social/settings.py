@@ -39,6 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'images',
+    'sorl.thumbnail',
 ]
 
 MIDDLEWARE = [
@@ -52,6 +54,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'social.urls'
+
 
 TEMPLATES = [
     {
@@ -71,7 +74,8 @@ TEMPLATES = [
 ]
 
 AUTHENTICATION_BACKENDS = (
-   'account.authentication.EmailAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+    'account.authentication.EmailAuthBackend',
 )
 
 WSGI_APPLICATION = 'social.wsgi.application'

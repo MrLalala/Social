@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% block title %}
+{{ image.title }}
+{% endblock %}
+{% block domready %}
+    $('a.like').click(
+        function(e){
+            e.preventDefault();
+            var jqxhr = $.post('{% url 'images:like' %}',
+                {
+                    id: $(this).data('id'),
+                    action: $(this).data('action')
+                },
+                function(data){
+                    if (data['status'] == 'ok')
+                    {
+                        var previous_action = $('a.like').data('action');
+
+                        // toggle data-action
+                        $('a.like').data('action', previous_action == 'like' ? 'unlike' : 'like');
+                        // toggle link text
+                        $('a.like').text(previous_action == 'like' ? 'Unlike' : 'Like');
+
+                        // update total likes
+                        var previous_likes = parseInt($('span.count .total').text());
+                        $('span.count .total').text(previous_action == 'like' ? previous_likes + 1 : previous_likes - 1);
+                    }
+                }
+            )
+            jqxhr.complete(
+            $.post('{% url 'images:detail_list' %}',
+                {
+                    id: $(this).data('id'),
+                },
+                function(data){
+                    $('#likes').html(data);
+                }
+            ));
+        }
+    );
+{% endblock %}
+{% block content %}
+<h1>{{ image.title }}</h1>
+    {% load thumbnail %}
+    {% thumbnail image.image '300' as im %}
+    <a href="{{ image.image.url }}"><img src="{{ im.url }}" alt="No"></a>
+    {% endthumbnail %}
+    {% with total_count=image.user_like.count users_like=image.user_like.all %}
+        <div class="image-info">
+            <div>
+                <span class="count"><span class="total">{{ total_count }}</span> like{{ total_count|pluralize }}</span>
+                <a href="#" data-id="{{ image.id }}" data-action="{% if request.user in users_like %}un{% endif %}like" class="like button">
+                    {% if request.user not in users_like %}
+                        Like
+                    {% else %}
+                        Unlike
+                    {% endif %}
+                </a>
+            </div>
+        </div>
+        {{ image.description|linebreaks }}
+        <div class="image-likes" id="likes">
+            {% include 'images/image/detail_list.html' %}
+        </div>
+    {% endwith %}
+{% endblock %}
