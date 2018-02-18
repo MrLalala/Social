@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 from images.common.decorators import ajax_required
 from .models import Contact
+from actions.utils import create_action
 
 
 def user_login(request):
@@ -34,7 +35,19 @@ def user_login(request):
 
 @login_required
 def dashboard(request):
-    return render(request, 'account/dashboard.html', {"section": 'dashboard'})
+    import logging
+    from actions.models import Action
+    actions = Action.objects.exclude(user=request.user)
+    logging.warn(request.user.id)
+    following_ids = request.user.following.values_list('id', flat=True)
+    logging.warn(following_ids)
+    if following_ids:
+        actions = actions.filter(user_id__in=following_ids)
+    actions = actions[:10]
+    logging.warn(actions)
+    return render(request, 'account/dashboard.html',
+                  {"section": 'dashboard',
+                   'actions': actions})
 
 
 def register(request):
@@ -52,6 +65,7 @@ def register(request):
             # 保存用户
             new_user.save()
             profile = Profile.objects.create(user=new_user)
+            create_action(request.user, 'create new account')
             return render(request, 'account/register_done.html', {'new_user': new_user})
     else:
         user_form = UserRegistrationForm()
@@ -115,6 +129,7 @@ def user_follow(request):
                     user_from=request.user,
                     user_to=user
                 )
+                create_action(request.user, 'is following', user)
             else:
                 Contact.objects.filter(user_from=request.user, user_to=user).delete()
             return JsonResponse({'status': 'ok'})

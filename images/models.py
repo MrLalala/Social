@@ -24,7 +24,7 @@ class Image(models.Model):
                                        blank=True)
 
     def __str__(self):
-        return self.title
+        return self.title.decode('utf-8')
 
     def save(self, *args, **kwargs):
         from django.utils.text import slugify
